@@ -1,0 +1,264 @@
+/* result-styles.css */
+
+.result-container {
+  min-height: calc(100vh - 80px);
+  padding: 60px 20px;
+  background: white;
+}
+
+.result-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Header */
+.result-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.result-title {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+
+.result-subtitle {
+  font-size: 20px;
+  color: #6e6e73;
+}
+
+/* Results Grid */
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.result-section {
+  background: white;
+  border: 2px solid;
+  border-radius: 16px;
+  padding: 32px;
+  transition: all 0.3s ease;
+}
+
+.result-section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Colors */
+.result-section.green {
+  border-color: #34c759;
+}
+
+.result-section.yellow {
+  border-color: #ff9500;
+}
+
+.result-section.red {
+  border-color: #ff3b30;
+}
+
+.result-section.blue {
+  border-color: #007aff;
+}
+
+.result-section.purple {
+  border-color: #af52de;
+}
+
+.result-section.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Section Header */
+.section-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.result-section.green .section-icon {
+  background: rgba(52, 199, 89, 0.1);
+  color: #34c759;
+}
+
+.result-section.yellow .section-icon {
+  background: rgba(255, 149, 0, 0.1);
+  color: #ff9500;
+}
+
+.result-section.red .section-icon {
+  background: rgba(255, 59, 48, 0.1);
+  color: #ff3b30;
+}
+
+.result-section.blue .section-icon {
+  background: rgba(0, 122, 255, 0.1);
+  color: #007aff;
+}
+
+.result-section.purple .section-icon {
+  background: rgba(175, 82, 222, 0.1);
+  color: #af52de;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #1d1d1f;
+}
+
+.section-description {
+  font-size: 15px;
+  color: #6e6e73;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* Section Content */
+.section-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-list li {
+  font-size: 17px;
+  color: #1d1d1f;
+  line-height: 1.6;
+  padding-left: 24px;
+  position: relative;
+}
+
+.section-list li::before {
+  content: '•';
+  position: absolute;
+  left: 8px;
+  font-weight: 600;
+}
+
+.result-section.green .section-list li::before {
+  color: #34c759;
+}
+
+.result-section.yellow .section-list li::before {
+  color: #ff9500;
+}
+
+.result-section.red .section-list li::before {
+  color: #ff3b30;
+}
+
+.result-section.blue .section-list li::before {
+  color: #007aff;
+}
+
+/* Operating Rule */
+.operating-rule {
+  background: rgba(175, 82, 222, 0.05);
+  border-left: 4px solid #af52de;
+  padding: 24px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #1d1d1f;
+  line-height: 1.6;
+}
+
+/* Actions */
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.result-actions .btn-primary,
+.result-actions .btn-secondary {
+  min-width: 280px;
+}
+
+/* Disclaimer */
+.disclaimer {
+  background: #f5f5f7;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 48px;
+}
+
+.disclaimer p {
+  font-size: 14px;
+  color: #6e6e73;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.disclaimer strong {
+  color: #1d1d1f;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .result-container {
+    padding: 80px 40px;
+  }
+
+  .results-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+
+  .result-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .result-title {
+    font-size: 32px;
+  }
+
+  .result-subtitle {
+    font-size: 17px;
+  }
+
+  .result-section {
+    padding: 24px;
+  }
+
+  .section-title {
+    font-size: 20px;
+  }
+
+  .section-list li {
+    font-size: 16px;
+  }
+
+  .operating-rule {
+    font-size: 18px;
+    padding: 20px;
+  }
+
+  .result-actions .btn-primary,
+  .result-actions .btn-secondary {
+    width: 100%;
+  }
+}
