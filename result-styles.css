@@ -1,4 +1,4 @@
-/* result-styles.css - Fixed formatting & mobile optimization */
+/* result-styles.css - FIXED LAYOUT + PROPER GRID */
 
 .result-container {
   min-height: calc(100vh - 80px);
@@ -7,7 +7,7 @@
 }
 
 .result-inner {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -38,14 +38,22 @@
 }
 
 /* ═══════════════════════════════════════════════
-   RESULTS GRID
+   RESULTS GRID - FIXED TO SHOW 2 COLUMNS
    ═══════════════════════════════════════════════ */
 
 .results-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr); /* ALWAYS 2 columns on desktop */
   gap: 24px;
   margin-bottom: 48px;
+}
+
+/* Mobile: 1 column */
+@media (max-width: 768px) {
+  .results-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 }
 
 .result-section {
@@ -56,6 +64,8 @@
   transition: all 0.2s ease;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  display: flex;
+  flex-direction: column;
 }
 
 .result-section:active {
@@ -69,8 +79,17 @@
 .result-section.blue { border-color: #007aff; }
 .result-section.purple { border-color: #af52de; }
 
+/* Full width for operating rule */
 .result-section.full-width {
   grid-column: 1 / -1;
+}
+
+/* Desktop: Hover effect */
+@media (min-width: 1024px) {
+  .result-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
 }
 
 /* ═══════════════════════════════════════════════
@@ -143,6 +162,7 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  flex-grow: 1;
 }
 
 .section-list li {
@@ -256,7 +276,6 @@
   }
 
   .results-grid {
-    grid-template-columns: repeat(2, 1fr);
     gap: 28px;
   }
 
@@ -293,11 +312,6 @@
   .result-actions .btn-secondary {
     width: auto;
     min-width: 200px;
-  }
-
-  .result-section:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   }
 }
 
@@ -413,64 +427,6 @@
   .disclaimer p {
     font-size: 13px;
     line-height: 1.55;
-  }
-}
-
-/* ═══════════════════════════════════════════════
-   VERY SMALL SCREENS (< 360px)
-   ═══════════════════════════════════════════════ */
-
-@media (max-width: 360px) {
-  .result-title {
-    font-size: 24px;
-  }
-
-  .result-subtitle {
-    font-size: 15px;
-  }
-
-  .section-title {
-    font-size: 18px;
-  }
-
-  .section-list li {
-    font-size: 14px;
-  }
-
-  .operating-rule {
-    font-size: 15px;
-  }
-}
-
-/* ═══════════════════════════════════════════════
-   LANDSCAPE MODE
-   ═══════════════════════════════════════════════ */
-
-@media (max-height: 500px) and (orientation: landscape) {
-  .result-container {
-    padding: 20px 16px;
-  }
-
-  .result-header {
-    margin-bottom: 24px;
-  }
-
-  .result-title {
-    font-size: 24px;
-    margin-bottom: 8px;
-  }
-
-  .result-subtitle {
-    font-size: 14px;
-  }
-
-  .results-grid {
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .result-section {
-    padding: 16px;
   }
 }
 
