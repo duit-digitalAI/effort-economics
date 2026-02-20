@@ -1,4 +1,4 @@
-// form.js - Form handling with Azure Function integration
+// form.js - FIXED: Working pincode autofetch + Real API
 
 // ═══════════════════════════════════════════════
 // CONFIGURATION
@@ -21,7 +21,7 @@ const TZ_OFFSETS = {
 };
 
 // ═══════════════════════════════════════════════
-// STATE MANAGEMENT
+// STATE
 // ═══════════════════════════════════════════════
 
 const formState = {
@@ -49,13 +49,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeForm() {
-  // Step 1: Phone Form
   const phoneForm = document.getElementById('phoneForm');
   if (phoneForm) {
     phoneForm.addEventListener('submit', handlePhoneSubmit);
   }
 
-  // Step 2: Birth Form
   const birthForm = document.getElementById('birthForm');
   if (birthForm) {
     birthForm.addEventListener('submit', handleBirthSubmit);
@@ -66,7 +64,7 @@ function initializeForm() {
     birthTimeInput.addEventListener('blur', formatBirthTime);
   }
 
-  // Step 3: Location Form
+  // FIX: Pincode auto-geocode with proper debounce
   const pincodeInput = document.getElementById('pincode');
   if (pincodeInput) {
     pincodeInput.addEventListener('input', debounce(autoGeocode, 1000));
@@ -83,6 +81,7 @@ function initializeForm() {
     locationForm.addEventListener('submit', handleFinalSubmit);
   }
 
+  // Reset verification when inputs change
   const cityInput = document.getElementById('city');
   const countryInput = document.getElementById('country');
   
@@ -91,7 +90,7 @@ function initializeForm() {
 }
 
 // ═══════════════════════════════════════════════
-// STEP 1: PHONE NUMBER
+// STEP 1: PHONE
 // ═══════════════════════════════════════════════
 
 function handlePhoneSubmit(e) {
@@ -114,12 +113,12 @@ function handlePhoneSubmit(e) {
   formState.phoneNumber = countryCode + phone;
   formState.consent = consent;
 
-  console.log('Phone:', formState.phoneNumber);
+  console.log('✓ Phone:', formState.phoneNumber);
   goToStep(2);
 }
 
 // ═══════════════════════════════════════════════
-// STEP 2: BIRTH DETAILS
+// STEP 2: BIRTH
 // ═══════════════════════════════════════════════
 
 function formatBirthTime(e) {
@@ -166,27 +165,34 @@ function handleBirthSubmit(e) {
   formState.birthDate = birthDate;
   formState.birthTime = birthTime;
 
-  console.log('Birth date:', birthDate, 'time:', birthTime);
+  console.log('✓ Birth:', birthDate, birthTime);
   goToStep(3);
 }
 
 // ═══════════════════════════════════════════════
-// STEP 3: LOCATION & GEOCODING
+// STEP 3: LOCATION WITH PINCODE AUTO-FETCH
 // ═══════════════════════════════════════════════
 
 function resetLocationVerification() {
   formState.locationVerified = false;
   document.getElementById('submitBtn').disabled = true;
-  document.getElementById('locationPreview').style.display = 'none';
+  
+  const preview = document.getElementById('locationPreview');
+  if (preview) {
+    preview.style.display = 'none';
+  }
   
   const geocodeBtn = document.getElementById('geocodeBtn');
-  geocodeBtn.disabled = false;
-  geocodeBtn.textContent = 'Verify Location';
-  geocodeBtn.style.background = '';
-  geocodeBtn.style.color = '';
-  geocodeBtn.style.borderColor = '';
+  if (geocodeBtn) {
+    geocodeBtn.disabled = false;
+    geocodeBtn.textContent = 'Verify Location';
+    geocodeBtn.style.background = '';
+    geocodeBtn.style.color = '';
+    geocodeBtn.style.borderColor = '';
+  }
 }
 
+// Debounce helper
 function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {
@@ -195,34 +201,49 @@ function debounce(func, wait) {
   };
 }
 
+// FIX: Auto-geocode with better error handling
 async function autoGeocode() {
   const pincode = document.getElementById('pincode').value.trim();
   
-  if (!pincode || pincode.length < 5) return;
+  if (!pincode || pincode.length < 5) {
+    return; // Don't try if too short
+  }
+
+  console.log('🔍 Auto-geocoding pincode:', pincode);
 
   try {
     const result = await reverseGeocodeFromPincode(pincode);
     
-    if (result) {
-      if (result.city) {
-        document.getElementById('city').value = result.city;
-      }
+    if (result && result.city) {
+      // Success - populate fields
+      document.getElementById('city').value = result.city;
       if (result.countryCode) {
         document.getElementById('country').value = result.countryCode;
       }
+      console.log('✓ Auto-populated:', result);
+    } else {
+      console.log('⚠ No location found for pincode:', pincode);
     }
   } catch (error) {
-    console.log('Auto-geocode failed:', error);
+    console.log('⚠ Auto-geocode error:', error);
+    // Silent fail - user can still enter manually
   }
 }
 
+// FIX: Pincode lookup with better error handling
 async function reverseGeocodeFromPincode(pincode) {
   try {
     const url = `https://nominatim.openstreetmap.org/search?format=json&postalcode=${encodeURIComponent(pincode)}&limit=1&addressdetails=1`;
     
     const response = await fetch(url, {
-      headers: { 'User-Agent': 'EffortEconomics/1.0' }
+      headers: {
+        'User-Agent': 'EffortEconomics/1.0'
+      }
     });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
 
     const data = await response.json();
 
@@ -230,17 +251,19 @@ async function reverseGeocodeFromPincode(pincode) {
       const address = data[0].address || {};
       
       return {
-        city: address.city || address.town || address.village || address.county || '',
+        city: address.city || address.town || address.village || address.county || address.state_district || '',
         countryCode: address.country_code ? address.country_code.toUpperCase() : ''
       };
     }
 
     return null;
   } catch (error) {
+    console.error('Reverse geocode error:', error);
     return null;
   }
 }
 
+// Main geocode button handler
 async function handleGeocode() {
   const country = document.getElementById('country').value;
   const pincode = document.getElementById('pincode').value.trim();
@@ -265,11 +288,10 @@ async function handleGeocode() {
       formState.latitude = result.lat;
       formState.longitude = result.lon;
       formState.timezone = result.timezone;
-      formState.tz_offset = TZ_OFFSETS[result.timezone] || guessOffsetFromTimezone(result.timezone);
+      formState.tz_offset = TZ_OFFSETS[result.timezone] || 5.5;
       formState.locationVerified = true;
 
-      console.log('Location verified:', result);
-      console.log('TZ offset:', formState.tz_offset);
+      console.log('✓ Location verified:', result);
 
       showLocationPreview(result);
       document.getElementById('submitBtn').disabled = false;
@@ -341,29 +363,26 @@ function guessTimezone(lat, lon) {
   return 'UTC';
 }
 
-function guessOffsetFromTimezone(tz) {
-  return TZ_OFFSETS[tz] || 0;
-}
-
 function getCountryName(code) {
   const countries = {
     'IN': 'India', 'US': 'United States', 'GB': 'United Kingdom',
     'AE': 'United Arab Emirates', 'SG': 'Singapore', 'AU': 'Australia',
     'CA': 'Canada', 'DE': 'Germany', 'FR': 'France', 'JP': 'Japan',
-    'CN': 'China', 'BR': 'Brazil', 'MX': 'Mexico', 'IT': 'Italy', 'ES': 'Spain'
+    'CN': 'China', 'BR': 'Brazil', 'MX': 'Mexico'
   };
   return countries[code] || code;
 }
 
 function showLocationPreview(result) {
+  const preview = document.getElementById('locationPreview');
   document.getElementById('detectedLocation').textContent = result.displayName;
   document.getElementById('displayLat').textContent = result.lat.toFixed(4);
   document.getElementById('displayLon').textContent = result.lon.toFixed(4);
-  document.getElementById('locationPreview').style.display = 'block';
+  preview.style.display = 'block';
 }
 
 // ═══════════════════════════════════════════════
-// FINAL SUBMIT - AZURE FUNCTION API CALL
+// FINAL SUBMIT - REAL API CALL
 // ═══════════════════════════════════════════════
 
 async function handleFinalSubmit(e) {
@@ -374,8 +393,11 @@ async function handleFinalSubmit(e) {
     return;
   }
 
-  document.getElementById('loadingIndicator').style.display = 'block';
-  document.getElementById('submitBtn').disabled = true;
+  const loadingIndicator = document.getElementById('loadingIndicator');
+  const submitBtn = document.getElementById('submitBtn');
+  
+  loadingIndicator.style.display = 'block';
+  submitBtn.disabled = true;
 
   const payload = {
     phone_number: formState.phoneNumber,
@@ -387,19 +409,22 @@ async function handleFinalSubmit(e) {
     tz_offset: formState.tz_offset
   };
 
-  console.log('Calling API with payload:', payload);
+  console.log('→ Calling API:', API_URL);
+  console.log('→ Payload:', payload);
 
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(payload)
     });
 
-    console.log('Response status:', response.status);
+    console.log('← Response status:', response.status);
 
     if (response.status === 429) {
-      throw new Error('Maximum 3 calculations reached for this phone number. This prevents misuse.');
+      throw new Error('Maximum 3 calculations reached for this phone number.');
     }
 
     if (!response.ok) {
@@ -408,24 +433,24 @@ async function handleFinalSubmit(e) {
     }
 
     const data = await response.json();
-    console.log('Response data:', data);
+    console.log('← Response data:', data);
 
     if (!data.success) {
       throw new Error(data.error || 'Calculation failed');
     }
 
-    // Store result in localStorage
+    // Store result
     localStorage.setItem('effortResult', JSON.stringify(data.output));
     localStorage.setItem('effortMeta', JSON.stringify(data.meta));
 
-    // Redirect to result page
+    // Redirect
     window.location.href = 'result.html';
 
   } catch (error) {
-    console.error('API error:', error);
+    console.error('✗ API error:', error);
     showError('locationForm', error.message || 'Calculation failed. Please try again.');
-    document.getElementById('loadingIndicator').style.display = 'none';
-    document.getElementById('submitBtn').disabled = false;
+    loadingIndicator.style.display = 'none';
+    submitBtn.disabled = false;
   }
 }
 
@@ -463,6 +488,8 @@ function updateProgress(stepNumber) {
 
 function showError(formId, message) {
   const form = document.getElementById(formId);
+  if (!form) return;
+  
   let errorDiv = form.querySelector('.error-message');
   
   if (!errorDiv) {
