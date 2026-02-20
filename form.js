@@ -110,7 +110,9 @@ function handlePhoneSubmit(e) {
     return;
   }
 
-  formState.phoneNumber = countryCode + phone;
+  // FIX: Remove + from country code before sending to backend
+  const cleanCountryCode = countryCode.replace('+', '');
+  formState.phoneNumber = cleanCountryCode + phone;
   formState.consent = consent;
 
   console.log('✓ Phone:', formState.phoneNumber);
@@ -400,7 +402,7 @@ async function handleFinalSubmit(e) {
   submitBtn.disabled = true;
 
   const payload = {
-    phone_number: formState.phone.replace(/\D/g, ''),
+    phone_number: formState.phoneNumber,
     consent: formState.consent,
     birth_date: formState.birthDate,
     birth_time: formState.birthTime,
