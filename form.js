@@ -1,8 +1,33 @@
-// form.js - Production connected to Azure Function
+// form.js - Form handling with Azure Function integration
+
+// ═══════════════════════════════════════════════
+// CONFIGURATION
+// ═══════════════════════════════════════════════
+
+const API_URL = 'https://effort-economics-api.azurewebsites.net/api/calculate';
+
+const TZ_OFFSETS = {
+  "Asia/Kolkata": 5.5,
+  "Asia/Dubai": 4.0,
+  "Asia/Singapore": 8.0,
+  "Asia/Tokyo": 9.0,
+  "Europe/London": 0.0,
+  "Europe/Paris": 1.0,
+  "America/New_York": -5.0,
+  "America/Chicago": -6.0,
+  "America/Los_Angeles": -8.0,
+  "Australia/Sydney": 10.0,
+  "UTC": 0.0
+};
+
+// ═══════════════════════════════════════════════
+// STATE MANAGEMENT
+// ═══════════════════════════════════════════════
 
 const formState = {
   currentStep: 1,
-  phone: null,
+  phoneNumber: null,
+  consent: false,
   birthDate: null,
   birthTime: null,
   country: 'IN',
@@ -11,42 +36,69 @@ const formState = {
   latitude: null,
   longitude: null,
   timezone: null,
+  tz_offset: 5.5,
   locationVerified: false
 };
 
-document.addEventListener('DOMContentLoaded', function () {
+// ═══════════════════════════════════════════════
+// INITIALIZATION
+// ═══════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', function() {
   initializeForm();
 });
 
 function initializeForm() {
+  // Step 1: Phone Form
   const phoneForm = document.getElementById('phoneForm');
-  if (phoneForm) phoneForm.addEventListener('submit', handlePhoneSubmit);
+  if (phoneForm) {
+    phoneForm.addEventListener('submit', handlePhoneSubmit);
+  }
 
+  // Step 2: Birth Form
   const birthForm = document.getElementById('birthForm');
-  if (birthForm) birthForm.addEventListener('submit', handleBirthSubmit);
+  if (birthForm) {
+    birthForm.addEventListener('submit', handleBirthSubmit);
+  }
 
   const birthTimeInput = document.getElementById('birthTime');
-  if (birthTimeInput) birthTimeInput.addEventListener('blur', formatBirthTime);
+  if (birthTimeInput) {
+    birthTimeInput.addEventListener('blur', formatBirthTime);
+  }
 
+  // Step 3: Location Form
   const pincodeInput = document.getElementById('pincode');
-  if (pincodeInput)
+  if (pincodeInput) {
     pincodeInput.addEventListener('input', debounce(autoGeocode, 1000));
+    pincodeInput.addEventListener('input', resetLocationVerification);
+  }
 
   const geocodeBtn = document.getElementById('geocodeBtn');
-  if (geocodeBtn) geocodeBtn.addEventListener('click', handleGeocode);
+  if (geocodeBtn) {
+    geocodeBtn.addEventListener('click', handleGeocode);
+  }
 
   const locationForm = document.getElementById('locationForm');
-  if (locationForm)
+  if (locationForm) {
     locationForm.addEventListener('submit', handleFinalSubmit);
+  }
+
+  const cityInput = document.getElementById('city');
+  const countryInput = document.getElementById('country');
+  
+  if (cityInput) cityInput.addEventListener('input', resetLocationVerification);
+  if (countryInput) countryInput.addEventListener('change', resetLocationVerification);
 }
 
-// STEP 1
+// ═══════════════════════════════════════════════
+// STEP 1: PHONE NUMBER
+// ═══════════════════════════════════════════════
 
-async function handlePhoneSubmit(e) {
+function handlePhoneSubmit(e) {
   e.preventDefault();
-
+  
   const countryCode = document.getElementById('countryCode').value;
-  const phone = document.getElementById('phone').value;
+  const phone = document.getElementById('phone').value.trim();
   const consent = document.getElementById('consent').checked;
 
   if (!consent) {
@@ -54,78 +106,265 @@ async function handlePhoneSubmit(e) {
     return;
   }
 
-  formState.phone = countryCode + phone;
+  if (!/^\d{10,15}$/.test(phone)) {
+    showError('phoneForm', 'Invalid phone number. Use 10-15 digits only.');
+    return;
+  }
+
+  formState.phoneNumber = countryCode + phone;
+  formState.consent = consent;
+
+  console.log('Phone:', formState.phoneNumber);
   goToStep(2);
 }
 
-// STEP 2
+// ═══════════════════════════════════════════════
+// STEP 2: BIRTH DETAILS
+// ═══════════════════════════════════════════════
 
 function formatBirthTime(e) {
   const input = e.target;
   let value = input.value.trim();
 
-  if (/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value))
+  if (/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value)) {
     input.value = value + ':00';
+  } else if (/^([01]?[0-9]|2[0-3]):[0-5][0-9]:$/.test(value)) {
+    input.value = value + '00';
+  } else if (/^([01]?[0-9]|2[0-3])$/.test(value)) {
+    input.value = value + ':00:00';
+  }
 }
 
 function handleBirthSubmit(e) {
   e.preventDefault();
-
+  
   const birthDate = document.getElementById('birthDate').value;
   let birthTime = document.getElementById('birthTime').value.trim();
 
+  if (/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(birthTime)) {
+    birthTime = birthTime + ':00';
+  }
+
   if (!/^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/.test(birthTime)) {
-    showError('birthForm', 'Birth time must be HH:MM:SS');
+    showError('birthForm', 'Birth time must be in HH:MM:SS format (e.g., 14:30:00)');
+    return;
+  }
+
+  const date = new Date(birthDate);
+  const now = new Date();
+  
+  if (date > now) {
+    showError('birthForm', 'Birth date cannot be in the future');
+    return;
+  }
+
+  if (date.getFullYear() < 1900) {
+    showError('birthForm', 'Birth date must be after 1900');
     return;
   }
 
   formState.birthDate = birthDate;
   formState.birthTime = birthTime;
 
+  console.log('Birth date:', birthDate, 'time:', birthTime);
   goToStep(3);
 }
 
-// STEP 3
+// ═══════════════════════════════════════════════
+// STEP 3: LOCATION & GEOCODING
+// ═══════════════════════════════════════════════
 
-async function handleGeocode() {
-  const country = document.getElementById('country').value;
-  const pincode = document.getElementById('pincode').value;
-  const city = document.getElementById('city').value;
-
-  if (!country || !pincode || !city) {
-    showError('locationForm', 'Please enter pin code, city and country');
-    return;
-  }
-
-  const result = await geocodeLocation(country, pincode, city);
-  if (!result) {
-    showError('locationForm', 'Location not found');
-    return;
-  }
-
-  formState.latitude = result.lat;
-  formState.longitude = result.lon;
-  formState.locationVerified = true;
-
-  document.getElementById('submitBtn').disabled = false;
+function resetLocationVerification() {
+  formState.locationVerified = false;
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('locationPreview').style.display = 'none';
+  
+  const geocodeBtn = document.getElementById('geocodeBtn');
+  geocodeBtn.disabled = false;
+  geocodeBtn.textContent = 'Verify Location';
+  geocodeBtn.style.background = '';
+  geocodeBtn.style.color = '';
+  geocodeBtn.style.borderColor = '';
 }
 
-async function geocodeLocation(country, pincode, city) {
-  const query = `${city}, ${pincode}, ${country}`;
-  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`;
-
-  const response = await fetch(url);
-  const data = await response.json();
-
-  if (!data || data.length === 0) return null;
-
-  return {
-    lat: parseFloat(data[0].lat),
-    lon: parseFloat(data[0].lon)
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
   };
 }
 
-// FINAL SUBMIT — CONNECTED TO AZURE
+async function autoGeocode() {
+  const pincode = document.getElementById('pincode').value.trim();
+  
+  if (!pincode || pincode.length < 5) return;
+
+  try {
+    const result = await reverseGeocodeFromPincode(pincode);
+    
+    if (result) {
+      if (result.city) {
+        document.getElementById('city').value = result.city;
+      }
+      if (result.countryCode) {
+        document.getElementById('country').value = result.countryCode;
+      }
+    }
+  } catch (error) {
+    console.log('Auto-geocode failed:', error);
+  }
+}
+
+async function reverseGeocodeFromPincode(pincode) {
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&postalcode=${encodeURIComponent(pincode)}&limit=1&addressdetails=1`;
+    
+    const response = await fetch(url, {
+      headers: { 'User-Agent': 'EffortEconomics/1.0' }
+    });
+
+    const data = await response.json();
+
+    if (data && data.length > 0) {
+      const address = data[0].address || {};
+      
+      return {
+        city: address.city || address.town || address.village || address.county || '',
+        countryCode: address.country_code ? address.country_code.toUpperCase() : ''
+      };
+    }
+
+    return null;
+  } catch (error) {
+    return null;
+  }
+}
+
+async function handleGeocode() {
+  const country = document.getElementById('country').value;
+  const pincode = document.getElementById('pincode').value.trim();
+  const city = document.getElementById('city').value.trim();
+
+  if (!country || !pincode || !city) {
+    showError('locationForm', 'Please enter pin code, city, and select country');
+    return;
+  }
+
+  const geocodeBtn = document.getElementById('geocodeBtn');
+  geocodeBtn.disabled = true;
+  geocodeBtn.textContent = 'Verifying...';
+
+  try {
+    const result = await geocodeLocation(country, pincode, city);
+    
+    if (result) {
+      formState.country = country;
+      formState.pincode = pincode;
+      formState.city = city;
+      formState.latitude = result.lat;
+      formState.longitude = result.lon;
+      formState.timezone = result.timezone;
+      formState.tz_offset = TZ_OFFSETS[result.timezone] || guessOffsetFromTimezone(result.timezone);
+      formState.locationVerified = true;
+
+      console.log('Location verified:', result);
+      console.log('TZ offset:', formState.tz_offset);
+
+      showLocationPreview(result);
+      document.getElementById('submitBtn').disabled = false;
+      
+      geocodeBtn.textContent = '✓ Location Verified';
+      geocodeBtn.style.background = '#34c759';
+      geocodeBtn.style.color = 'white';
+      geocodeBtn.style.borderColor = '#34c759';
+      
+    } else {
+      throw new Error('Location not found');
+    }
+  } catch (error) {
+    showError('locationForm', 'Could not find location. Please check pin code and city.');
+    geocodeBtn.disabled = false;
+    geocodeBtn.textContent = 'Verify Location';
+  }
+}
+
+async function geocodeLocation(country, pincode, city) {
+  try {
+    const query = `${city}, ${pincode}, ${getCountryName(country)}`;
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&addressdetails=1`;
+    
+    const response = await fetch(url, {
+      headers: { 'User-Agent': 'EffortEconomics/1.0' }
+    });
+
+    const data = await response.json();
+
+    if (data && data.length > 0) {
+      const result = data[0];
+      const timezone = await getTimezone(result.lat, result.lon);
+
+      return {
+        lat: parseFloat(result.lat),
+        lon: parseFloat(result.lon),
+        displayName: result.display_name,
+        timezone: timezone
+      };
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Geocoding error:', error);
+    return null;
+  }
+}
+
+async function getTimezone(lat, lon) {
+  try {
+    const url = `https://timeapi.io/api/TimeZone/coordinate?latitude=${lat}&longitude=${lon}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data.timeZone || guessTimezone(lat, lon);
+  } catch (error) {
+    return guessTimezone(lat, lon);
+  }
+}
+
+function guessTimezone(lat, lon) {
+  if (lat > 8 && lat < 35 && lon > 68 && lon < 97) return 'Asia/Kolkata';
+  if (lat > 25 && lat < 48 && lon > -85 && lon < -65) return 'America/New_York';
+  if (lat > 32 && lat < 49 && lon > -125 && lon < -114) return 'America/Los_Angeles';
+  if (lat > 50 && lat < 60 && lon > -8 && lon < 2) return 'Europe/London';
+  if (lat > 22 && lat < 27 && lon > 51 && lon < 57) return 'Asia/Dubai';
+  if (lat > 1 && lat < 2 && lon > 103 && lon < 104) return 'Asia/Singapore';
+  if (lat > -35 && lat < -33 && lon > 150 && lon < 152) return 'Australia/Sydney';
+  return 'UTC';
+}
+
+function guessOffsetFromTimezone(tz) {
+  return TZ_OFFSETS[tz] || 0;
+}
+
+function getCountryName(code) {
+  const countries = {
+    'IN': 'India', 'US': 'United States', 'GB': 'United Kingdom',
+    'AE': 'United Arab Emirates', 'SG': 'Singapore', 'AU': 'Australia',
+    'CA': 'Canada', 'DE': 'Germany', 'FR': 'France', 'JP': 'Japan',
+    'CN': 'China', 'BR': 'Brazil', 'MX': 'Mexico', 'IT': 'Italy', 'ES': 'Spain'
+  };
+  return countries[code] || code;
+}
+
+function showLocationPreview(result) {
+  document.getElementById('detectedLocation').textContent = result.displayName;
+  document.getElementById('displayLat').textContent = result.lat.toFixed(4);
+  document.getElementById('displayLon').textContent = result.lon.toFixed(4);
+  document.getElementById('locationPreview').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════
+// FINAL SUBMIT - AZURE FUNCTION API CALL
+// ═══════════════════════════════════════════════
 
 async function handleFinalSubmit(e) {
   e.preventDefault();
@@ -138,67 +377,102 @@ async function handleFinalSubmit(e) {
   document.getElementById('loadingIndicator').style.display = 'block';
   document.getElementById('submitBtn').disabled = true;
 
+  const payload = {
+    phone_number: formState.phoneNumber,
+    consent: formState.consent,
+    birth_date: formState.birthDate,
+    birth_time: formState.birthTime,
+    latitude: formState.latitude,
+    longitude: formState.longitude,
+    tz_offset: formState.tz_offset
+  };
+
+  console.log('Calling API with payload:', payload);
+
   try {
-    const response = await fetch(
-      'https://effort-economics-api.azurewebsites.net/api/calculate',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          phone_number: formState.phone.replace(/\D/g, ''),
-          consent: true,
-          birth_date: formState.birthDate,
-          birth_time: formState.birthTime,
-          latitude: formState.latitude,
-          longitude: formState.longitude,
-          tz_offset: 5.5
-        })
-      }
-    );
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
 
-    const result = await response.json();
+    console.log('Response status:', response.status);
 
-    if (!response.ok || !result.success) {
-      throw new Error(result.error || "Calculation failed");
+    if (response.status === 429) {
+      throw new Error('Maximum 3 calculations reached for this phone number. This prevents misuse.');
     }
 
-    localStorage.setItem('effortResult', JSON.stringify(result.output));
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Server error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Response data:', data);
+
+    if (!data.success) {
+      throw new Error(data.error || 'Calculation failed');
+    }
+
+    // Store result in localStorage
+    localStorage.setItem('effortResult', JSON.stringify(data.output));
+    localStorage.setItem('effortMeta', JSON.stringify(data.meta));
+
+    // Redirect to result page
     window.location.href = 'result.html';
 
   } catch (error) {
-    console.error(error);
-    showError('locationForm', 'Calculation failed. Please try again.');
+    console.error('API error:', error);
+    showError('locationForm', error.message || 'Calculation failed. Please try again.');
     document.getElementById('loadingIndicator').style.display = 'none';
     document.getElementById('submitBtn').disabled = false;
   }
 }
 
-// HELPERS
+// ═══════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════
 
 function goToStep(stepNumber) {
-  document.querySelectorAll('.form-step').forEach(step =>
-    step.classList.remove('active')
-  );
+  document.querySelectorAll('.form-step').forEach(step => {
+    step.classList.remove('active');
+  });
+
   document.getElementById(`step${stepNumber}`).classList.add('active');
+  updateProgress(stepNumber);
+  formState.currentStep = stepNumber;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function debounce(func, wait) {
-  let timeout;
-  return function (...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
+window.goToStep = goToStep;
+
+function updateProgress(stepNumber) {
+  document.querySelectorAll('.progress-step').forEach((step, index) => {
+    const num = index + 1;
+    if (num < stepNumber) {
+      step.classList.add('completed');
+      step.classList.remove('active');
+    } else if (num === stepNumber) {
+      step.classList.add('active');
+      step.classList.remove('completed');
+    } else {
+      step.classList.remove('active', 'completed');
+    }
+  });
 }
 
 function showError(formId, message) {
   const form = document.getElementById(formId);
   let errorDiv = form.querySelector('.error-message');
-
+  
   if (!errorDiv) {
     errorDiv = document.createElement('div');
     errorDiv.className = 'error-message';
     form.appendChild(errorDiv);
   }
-
+  
   errorDiv.textContent = message;
+  errorDiv.classList.add('show');
+  
+  setTimeout(() => errorDiv.classList.remove('show'), 6000);
 }
