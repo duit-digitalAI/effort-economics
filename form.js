@@ -400,7 +400,7 @@ async function handleFinalSubmit(e) {
   submitBtn.disabled = true;
 
   const payload = {
-    phone_number: formState.phoneNumber,
+    phone_number: formState.phone.replace(/\D/g, ''),
     consent: formState.consent,
     birth_date: formState.birthDate,
     birth_time: formState.birthTime,
