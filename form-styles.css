@@ -1,4 +1,4 @@
-/* form-styles.css */
+/* form-styles.css - Mobile optimized */
 
 .form-container {
   min-height: calc(100vh - 80px);
@@ -188,6 +188,9 @@
   font-size: 14px;
   color: #1d1d1f;
   line-height: 1.5;
+  /* Mobile: Prevent text selection */
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -201,16 +204,32 @@
 .checkbox-label a {
   color: #0071e3;
   text-decoration: none;
+  /* Mobile: Prevent callout menu */
+  -webkit-touch-callout: none;
 }
 
 .checkbox-label a:hover {
   text-decoration: underline;
 }
 
-/* Buttons */
+/* Buttons - MOBILE OPTIMIZED */
 .btn-form {
   width: 100%;
   margin-top: 8px;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-text {
+  /* Mobile: Remove tap highlight */
+  -webkit-tap-highlight-color: transparent;
+  /* Mobile: Prevent callout menu */
+  -webkit-touch-callout: none;
+  /* Mobile: Prevent text selection */
+  -webkit-user-select: none;
+  user-select: none;
+  /* Mobile: Prevent zoom on double tap */
+  touch-action: manipulation;
 }
 
 .btn-secondary {
@@ -390,7 +409,7 @@
   }
 }
 
-/* Back Link in Nav */
+/* Nav adjustments */
 .nav-inner {
   display: flex;
   align-items: center;
@@ -406,6 +425,9 @@
   gap: 12px;
   text-decoration: none;
   color: inherit;
+  /* Mobile: Prevent callout */
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .back-link {
@@ -413,13 +435,15 @@
   color: #0071e3;
   text-decoration: none;
   font-weight: 500;
+  /* Mobile: Prevent callout */
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .back-link:hover {
   text-decoration: underline;
 }
 
-/* Fix country code visibility */
 /* Better country code dropdown */
 .country-code {
   min-width: 140px;
@@ -437,7 +461,6 @@
   padding: 4px;
 }
 
-/* Phone input takes remaining space */
 .phone-input-wrapper input {
   flex: 1;
   min-width: 0;
@@ -450,6 +473,7 @@
     font-size: 13px;
   }
 }
+
 /* Mobile nav adjustments */
 @media (max-width: 768px) {
   .nav-inner {
@@ -462,12 +486,21 @@
   }
   
   .brand {
-    display: none; /* Hide "Duit Digital" text on mobile to save space */
+    display: none;
   }
 }
 
 @media (max-width: 480px) {
   .back-link {
     font-size: 12px;
+  }
+}
+
+/* Safe Area Insets (iPhone notch) */
+@supports (padding: max(0px)) {
+  .form-container {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+    padding-bottom: max(40px, env(safe-area-inset-bottom));
   }
 }
