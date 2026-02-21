@@ -1,82 +1,32 @@
-// result.js - Display results and handle actions
+// SHARE
+document.getElementById("shareBtn").addEventListener("click", async () => {
+  const url = window.location.origin + "/index.html?ref=share";
+  const text = "See where your effort compounds using Effort Economics.";
 
-document.addEventListener('DOMContentLoaded', function() {
-  loadResults();
-  initializeActions();
+  if (navigator.share) {
+    await navigator.share({ title: "Effort Economics", text, url });
+  } else {
+    await navigator.clipboard.writeText(url);
+    alert("Link copied to clipboard.");
+  }
 });
 
-function loadResults() {
-  // Get results from localStorage
-  const resultData = localStorage.getItem('effortResult');
-  
-  if (!resultData) {
-    // No results found - redirect to form
-    window.location.href = 'form.html';
-    return;
-  }
-
-  const result = JSON.parse(resultData);
-
-  // Populate sections
-  populateList('whatWentWell', result.what_went_well);
-  populateList('whatCouldBeBetter', result.what_could_be_better);
-  populateList('whatWillNeverWork', result.what_will_never_work);
-  populateList('whatWillCompound', result.what_will_compound);
-  
-  // Populate operating rule
-  document.getElementById('operatingRule').textContent = result.operating_rule;
-}
-
-function populateList(elementId, items) {
-  const list = document.getElementById(elementId);
-  list.innerHTML = '';
-  
-  items.forEach(item => {
-    const li = document.createElement('li');
-    li.textContent = item;
-    list.appendChild(li);
+// FEEDBACK
+function sendFeedback(vote) {
+  fetch("https://effort-economics-api.azurewebsites.net/api/feedback", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ vote })
   });
 }
 
-function initializeActions() {
-  // Download PDF
-  document.getElementById('downloadBtn').addEventListener('click', handleDownload);
-  
-  // Share
-  document.getElementById('shareBtn').addEventListener('click', handleShare);
-  
-  // New Calculation
-  document.getElementById('newCalcBtn').addEventListener('click', function() {
-    localStorage.removeItem('effortResult');
-    window.location.href = 'form.html';
-  });
-}
+document.getElementById("thumbsUp").onclick = () => sendFeedback("up");
+document.getElementById("thumbsDown").onclick = () => sendFeedback("down");
 
-function handleDownload() {
-  // In production: Generate PDF using library like jsPDF
-  // For now: Print to PDF
-  window.print();
-}
-
-function handleShare() {
-  // Copy current URL to clipboard
-  const url = window.location.href;
-  
-  navigator.clipboard.writeText(url).then(() => {
-    const btn = document.getElementById('shareBtn');
-    const originalText = btn.textContent;
-    btn.textContent = '✓ Link Copied!';
-    btn.style.background = '#34c759';
-    btn.style.color = 'white';
-    btn.style.borderColor = '#34c759';
-    
-    setTimeout(() => {
-      btn.textContent = originalText;
-      btn.style.background = '';
-      btn.style.color = '';
-      btn.style.borderColor = '';
-    }, 2000);
-  }).catch(err => {
-    alert('Could not copy link. Please copy manually: ' + url);
+// USAGE COUNTER
+fetch("https://effort-economics-api.azurewebsites.net/api/usage")
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("usageCounter").innerText =
+      data.count + " people have mapped their effort structure.";
   });
-}
