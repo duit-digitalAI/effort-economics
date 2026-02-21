@@ -8,108 +8,95 @@
   <link rel="icon" type="image/png" href="assets/favicon.png" />
   <link rel="apple-touch-icon" href="assets/favicon.png" />
 
-  <!-- Base + Result Styles -->
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="result-styles.css" />
 </head>
 
 <body>
 
-  <!-- NAV -->
-  <header class="nav">
-    <div class="nav-inner result-nav">
-      <a href="https://www.duitai.in/" class="nav-link">
-        <img src="assets/logo.png" alt="Duit" class="logo" />
-        <span class="brand">Duit Digital</span>
-      </a>
+<header class="nav">
+  <div class="nav-inner result-nav">
+    <a href="https://www.duitai.in/" class="nav-link">
+      <img src="assets/logo.png" alt="Duit" class="logo" />
+      <span class="brand">Duit Digital</span>
+    </a>
 
-      <a href="index.html" class="back-link">
-        ← Back to Effort Economics
-      </a>
+    <a href="index.html" class="back-link">
+      ← Back to Effort Economics
+    </a>
+  </div>
+</header>
+
+<main class="result-container">
+  <div class="result-inner">
+
+    <div class="result-header">
+      <h1 class="result-title">Your Effort Structure</h1>
+      <p class="result-subtitle">
+        5 structural truths about where effort compounds vs decays
+      </p>
+      <p class="usage-counter" id="usageCounter"></p>
     </div>
-  </header>
 
-  <!-- MAIN -->
-  <main class="result-container">
-    <div class="result-inner">
+    <div class="results-grid">
 
-      <!-- HEADER -->
-      <div class="result-header">
-        <h1 class="result-title">Your Effort Structure</h1>
-        <p class="result-subtitle">
-          5 structural truths about where effort compounds vs decays
-        </p>
-      </div>
+      <section class="result-section green">
+        <div class="section-badge success">ADVANTAGE ZONE</div>
+        <h2 class="section-title">What Went Well</h2>
+        <ul class="section-list" id="whatWentWell"></ul>
+      </section>
 
-      <!-- GRID -->
-      <div class="results-grid">
+      <section class="result-section yellow">
+        <div class="section-badge caution">FRICTION ZONE</div>
+        <h2 class="section-title">What Could Be Better</h2>
+        <ul class="section-list" id="whatCouldBeBetter"></ul>
+      </section>
 
-        <section class="result-section green">
-          <div class="section-icon">✓</div>
-          <h2 class="section-title">What Went Well</h2>
-          <p class="section-description">Effort domains that naturally converted into results</p>
-          <ul class="section-list" id="whatWentWell"></ul>
-        </section>
+      <section class="result-section red">
+        <div class="section-badge danger">STRUCTURAL DEAD ZONE</div>
+        <h2 class="section-title">What Will Never Work</h2>
+        <ul class="section-list" id="whatWillNeverWork"></ul>
+      </section>
 
-        <section class="result-section yellow">
-          <div class="section-icon">⚠</div>
-          <h2 class="section-title">What Could Be Better</h2>
-          <p class="section-description">Friction zones requiring recalibration</p>
-          <ul class="section-list" id="whatCouldBeBetter"></ul>
-        </section>
+      <section class="result-section blue">
+        <div class="section-badge growth">COMPOUNDING ZONE</div>
+        <h2 class="section-title">What Will Compound</h2>
+        <ul class="section-list" id="whatWillCompound"></ul>
+      </section>
 
-        <section class="result-section red">
-          <div class="section-icon">✗</div>
-          <h2 class="section-title">What Will Never Work</h2>
-          <p class="section-description">Structural dead zones — avoid allocating here</p>
-          <ul class="section-list" id="whatWillNeverWork"></ul>
-        </section>
+      <section class="result-section purple full-width">
+        <div class="section-badge rule">YOUR GOVERNING RULE</div>
+        <h2 class="section-title">One Rule To Follow</h2>
 
-        <section class="result-section blue">
-          <div class="section-icon">↗</div>
-          <h2 class="section-title">What Will Compound</h2>
-          <p class="section-description">High-leverage paths that multiply effort</p>
-          <ul class="section-list" id="whatWillCompound"></ul>
-        </section>
+        <div class="operating-rule" id="operatingRule"></div>
 
-        <section class="result-section purple full-width">
-          <div class="section-icon">→</div>
-          <h2 class="section-title">Your Operating Rule</h2>
-          <p class="section-description">If you follow only one rule, follow this</p>
-          <div class="operating-rule" id="operatingRule"></div>
-
-          <!-- FEEDBACK -->
-          <div class="feedback-block">
-            <p class="feedback-label">Was this accurate?</p>
-            <div class="feedback-buttons">
-              <button id="thumbsUp">👍</button>
-              <button id="thumbsDown">👎</button>
-            </div>
+        <div class="feedback-block">
+          <p class="feedback-label">Was this accurate?</p>
+          <div class="feedback-buttons">
+            <button id="thumbsUp">👍</button>
+            <button id="thumbsDown">👎</button>
           </div>
-        </section>
-
-      </div>
-
-      <!-- ACTIONS -->
-      <div class="result-actions">
-        <button id="downloadBtn" class="btn-primary">Download as PDF</button>
-        <button id="shareBtn" class="btn-secondary">Copy Link</button>
-        <button id="newCalcBtn" class="btn-secondary">Calculate Again</button>
-      </div>
-
-      <!-- DISCLAIMER -->
-      <div class="disclaimer">
-        <p>
-          <strong>Important:</strong> This is a constraint system, not destiny.
-          These outputs explain structural patterns based on initial conditions.
-          They do not predict events. Use as decision-support only.
-        </p>
-      </div>
+        </div>
+      </section>
 
     </div>
-  </main>
 
-  <script src="result.js"></script>
+    <div class="result-actions">
+      <button id="downloadBtn" class="btn-primary">Download PDF</button>
+      <button id="shareBtn" class="btn-secondary">Share With Friends</button>
+      <button id="newCalcBtn" class="btn-secondary">Calculate Again</button>
+    </div>
 
+    <div class="disclaimer">
+      <p>
+        <strong>Important:</strong> This is a constraint system, not destiny.
+        These outputs explain structural patterns based on initial conditions.
+      </p>
+    </div>
+
+  </div>
+</main>
+
+<script src="result.js"></script>
 </body>
 </html>
