@@ -1,22 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Effort Economics | Result</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Effort Economics | Result</title>
 
-  <link rel="icon" type="image/png" href="assets/favicon.png" />
-  <link rel="apple-touch-icon" href="assets/favicon.png" />
-
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="result-styles.css" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="result-styles.css" />
 </head>
 
 <body>
 
 <header class="nav">
   <div class="nav-inner result-nav">
-    <a href="https://www.duitai.in/" class="nav-link">
+    <a href="https://www.duitai.in/" class="nav-link clean-link">
       <img src="assets/logo.png" alt="Duit" class="logo" />
       <span class="brand">Duit Digital</span>
     </a>
@@ -41,57 +38,52 @@
     <div class="results-grid">
 
       <section class="result-section green">
-        <div class="section-badge success">ADVANTAGE ZONE</div>
-        <h2 class="section-title">What Went Well</h2>
-        <ul class="section-list" id="whatWentWell"></ul>
+        <div class="badge success">ADVANTAGE ZONE</div>
+        <h2>What Went Well</h2>
+        <ul id="whatWentWell"></ul>
       </section>
 
       <section class="result-section yellow">
-        <div class="section-badge caution">FRICTION ZONE</div>
-        <h2 class="section-title">What Could Be Better</h2>
-        <ul class="section-list" id="whatCouldBeBetter"></ul>
+        <div class="badge caution">FRICTION ZONE</div>
+        <h2>What Could Be Better</h2>
+        <ul id="whatCouldBeBetter"></ul>
       </section>
 
       <section class="result-section red">
-        <div class="section-badge danger">STRUCTURAL DEAD ZONE</div>
-        <h2 class="section-title">What Will Never Work</h2>
-        <ul class="section-list" id="whatWillNeverWork"></ul>
+        <div class="badge danger">STRUCTURAL DEAD ZONE</div>
+        <h2>What Will Never Work</h2>
+        <ul id="whatWillNeverWork"></ul>
       </section>
 
       <section class="result-section blue">
-        <div class="section-badge growth">COMPOUNDING ZONE</div>
-        <h2 class="section-title">What Will Compound</h2>
-        <ul class="section-list" id="whatWillCompound"></ul>
+        <div class="badge growth">COMPOUNDING ZONE</div>
+        <h2>What Will Compound</h2>
+        <ul id="whatWillCompound"></ul>
       </section>
 
       <section class="result-section purple full-width">
-        <div class="section-badge rule">YOUR GOVERNING RULE</div>
-        <h2 class="section-title">One Rule To Follow</h2>
-
+        <div class="badge rule">GOVERNING RULE</div>
+        <h2>One Rule To Follow</h2>
         <div class="operating-rule" id="operatingRule"></div>
 
         <div class="feedback-block">
-          <p class="feedback-label">Was this accurate?</p>
-          <div class="feedback-buttons">
-            <button id="thumbsUp">👍</button>
-            <button id="thumbsDown">👎</button>
-          </div>
+          <span>Was this accurate?</span>
+          <button id="thumbsUp">👍</button>
+          <button id="thumbsDown">👎</button>
         </div>
       </section>
 
     </div>
 
     <div class="result-actions">
-      <button id="downloadBtn" class="btn-primary">Download PDF</button>
-      <button id="shareBtn" class="btn-secondary">Share With Friends</button>
-      <button id="newCalcBtn" class="btn-secondary">Calculate Again</button>
+      <button class="btn-primary">Download PDF</button>
+      <button class="btn-primary" id="shareBtn">Share With Friends</button>
+      <button class="btn-primary" id="newCalcBtn">Calculate Again</button>
     </div>
 
     <div class="disclaimer">
-      <p>
-        <strong>Important:</strong> This is a constraint system, not destiny.
-        These outputs explain structural patterns based on initial conditions.
-      </p>
+      <strong>Important:</strong>
+      This is a constraint system, not destiny.
     </div>
 
   </div>
