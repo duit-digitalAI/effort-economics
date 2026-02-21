@@ -10,6 +10,7 @@ async function safeFetch(url) {
 }
 
 // Usage Counter
+/*
 safeFetch("https://effort-economics-api.azurewebsites.net/api/usage")
   .then(data => {
     if (data && data.count) {
@@ -17,7 +18,7 @@ safeFetch("https://effort-economics-api.azurewebsites.net/api/usage")
         data.count + " people have mapped their effort structure.";
     }
   });
-
+*/
 // Share
 document.getElementById("shareBtn").addEventListener("click", async () => {
   const url = window.location.origin + "/index.html";
