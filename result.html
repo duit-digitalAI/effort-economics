@@ -3,141 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <!-- Existing title -->
+
   <title>Effort Economics | Where Does Your Effort Pay Off?</title>
-  
-  <!-- Favicon (browser tab icon) -->
+
   <link rel="icon" type="image/png" href="assets/favicon.png" />
   <link rel="apple-touch-icon" href="assets/favicon.png" />
-  
-  <!-- Open Graph / Social Media Preview -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://effort.duit.digital/" />
-  <meta property="og:title" content="Effort Economics | Where Does Your Effort Pay Off?" />
-  <meta property="og:description" content="Stop grinding in the wrong direction. Know where effort compounds. 5 structural truths in 60 seconds." />
-  <meta property="og:image" content="https://effort.duit.digital/assets/og-image.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://effort.duit.digital/" />
-  <meta name="twitter:title" content="Effort Economics | Where Does Your Effort Pay Off?" />
-  <meta name="twitter:description" content="Stop grinding in the wrong direction. Know where effort compounds." />
-  <meta name="twitter:image" content="https://effort.duit.digital/assets/og-image.png" />
-  
+
+  <!-- IMPORTANT: load base styles FIRST -->
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Then result-specific overrides -->
   <link rel="stylesheet" href="result-styles.css" />
 </head>
-  <body>
+
+<body>
 
   <!-- Top Bar -->
   <header class="nav">
     <div class="nav-inner">
       <a href="https://www.duitai.in/" class="nav-link">
-  <img src="assets/logo.png" alt="Duit" class="logo" />
-  <span class="brand">Duit Digital</span>
-</a>
-<a href="index.html" class="back-link" style="color: #0071e3; text-decoration: none; font-size: 15px; font-weight: 500;">← Back to Effort Economics</a>
+        <img src="assets/logo.png" alt="Duit" class="logo" />
+        <span class="brand">Duit Digital</span>
+      </a>
+
+      <a href="index.html" class="back-link">
+        ← Back to Effort Economics
       </a>
     </div>
   </header>
 
-  <!-- Result Container -->
   <main class="result-container">
-    
     <div class="result-inner">
-      
-      <!-- Header -->
+
       <div class="result-header">
         <h1 class="result-title">Your Effort Structure</h1>
-        <p class="result-subtitle">5 structural truths about where your effort compounds vs decays</p>
+        <p class="result-subtitle">
+          5 structural truths about where your effort compounds vs decays
+        </p>
       </div>
 
-      <!-- Results Grid -->
       <div class="results-grid">
 
-        <!-- Section 1: What Went Well -->
         <section class="result-section green">
           <div class="section-icon">✓</div>
           <h2 class="section-title">What Went Well</h2>
-          <p class="section-description">Effort domains that historically showed compounding returns</p>
+          <p class="section-description">
+            Effort domains that historically showed compounding returns
+          </p>
           <ul class="section-list" id="whatWentWell"></ul>
         </section>
 
-        <!-- Section 2: What Could Be Better -->
         <section class="result-section yellow">
           <div class="section-icon">⚠</div>
           <h2 class="section-title">What Could Be Better</h2>
-          <p class="section-description">Effort domains with friction but not impossibility</p>
+          <p class="section-description">
+            Effort domains with friction but not impossibility
+          </p>
           <ul class="section-list" id="whatCouldBeBetter"></ul>
         </section>
 
-        <!-- Section 3: What Will Never Work -->
         <section class="result-section red">
           <div class="section-icon">✗</div>
           <h2 class="section-title">What Will Never Work</h2>
-          <p class="section-description">Structural impossibilities — effort sinks to avoid</p>
+          <p class="section-description">
+            Structural impossibilities — effort sinks to avoid
+          </p>
           <ul class="section-list" id="whatWillNeverWork"></ul>
         </section>
 
-        <!-- Section 4: What Will Compound -->
         <section class="result-section blue">
           <div class="section-icon">↗</div>
           <h2 class="section-title">What Will Compound</h2>
-          <p class="section-description">High-leverage effort allocation targets</p>
+          <p class="section-description">
+            High-leverage effort allocation targets
+          </p>
           <ul class="section-list" id="whatWillCompound"></ul>
         </section>
 
-        <!-- Section 5: Operating Rule -->
         <section class="result-section purple full-width">
           <div class="section-icon">→</div>
           <h2 class="section-title">Your Operating Rule</h2>
-          <p class="section-description">The single most important decision heuristic</p>
+          <p class="section-description">
+            The single most important decision heuristic
+          </p>
           <div class="operating-rule" id="operatingRule"></div>
         </section>
 
       </div>
 
-      <!-- Actions -->
       <div class="result-actions">
-        <button id="downloadBtn" class="btn-primary">
-          Download as PDF
-        </button>
-        <button id="shareBtn" class="btn-secondary">
-          Copy Link to Share
-        </button>
-        <button id="newCalcBtn" class="btn-text">
-          Calculate for Someone Else
-        </button>
+        <button id="downloadBtn" class="btn-primary">Download as PDF</button>
+        <button id="shareBtn" class="btn-secondary">Copy Link to Share</button>
+        <button id="newCalcBtn" class="btn-text">Calculate for Someone Else</button>
       </div>
 
-      <!-- Disclaimer -->
       <div class="disclaimer">
-        <p><strong>Important:</strong> This is a constraint system, not destiny. These outputs explain structural patterns based on initial conditions (birth data). They do not predict future events or prescribe actions. Use as decision-support only.</p>
+        <p>
+          <strong>Important:</strong> This is a constraint system, not destiny.
+          These outputs explain structural patterns based on initial conditions.
+          They do not predict events. Use as decision-support only.
+        </p>
       </div>
 
     </div>
-
   </main>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="footer-inner">
       <div class="footer-left">
         <p class="footer-tagline">No remedies. No predictions. Just constraints.</p>
-        <p class="footer-open-source">Built on deterministic rules • <a href="https://github.com/duitai/effort-economics" target="_blank">Open-source framework</a></p>
-      </div>
-      <div class="footer-right">
-        <a href="https://duitai.in/legal" target="_blank">Privacy</a>
-<a href="https://duitai.in/contact" target="_blank">Contact</a>
-        <a href="https://github.com/duitai/effort-economics" target="_blank">GitHub</a>
       </div>
     </div>
   </footer>
 
   <script src="result.js"></script>
-  
-  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "442c39629b594fad83fac0a8255d7584"}'></script><!-- End Cloudflare Web Analytics -->
+
 </body>
 </html>
