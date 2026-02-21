@@ -1,12 +1,17 @@
+.clean-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 .result-nav {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 }
 
 .result-container {
   background: #f6f7fb;
-  padding: 60px 20px 80px;
+  padding: 60px 20px;
 }
 
 .result-inner {
@@ -19,25 +24,6 @@
   margin-bottom: 60px;
 }
 
-.result-title {
-  font-size: 48px;
-  font-weight: 700;
-}
-
-.result-subtitle {
-  font-size: 18px;
-  color: var(--muted);
-  margin-top: 8px;
-}
-
-.usage-counter {
-  margin-top: 10px;
-  font-size: 14px;
-  color: var(--muted);
-}
-
-/* GRID */
-
 .results-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -46,127 +32,74 @@
 }
 
 @media (max-width: 900px) {
-  .results-grid {
-    grid-template-columns: 1fr;
-  }
+  .results-grid { grid-template-columns: 1fr; }
 }
-
-/* CARD */
 
 .result-section {
   background: white;
   border-radius: 16px;
-  padding: 28px;
-  border: 1px solid var(--border);
-  position: relative;
-  transition: 0.2s ease;
+  padding: 30px;
+  border: 1px solid #ddd;
 }
 
-.result-section:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-}
+.result-section.green  { border-top: 4px solid #34c759; }
+.result-section.yellow { border-top: 4px solid #ff9500; }
+.result-section.red    { border-top: 4px solid #ff3b30; }
+.result-section.blue   { border-top: 4px solid #007aff; }
+.result-section.purple { border-top: 4px solid #af52de; }
 
-.result-section.green  { border-top: 4px solid var(--green); }
-.result-section.yellow { border-top: 4px solid var(--yellow); }
-.result-section.red    { border-top: 4px solid var(--red); }
-.result-section.blue   { border-top: 4px solid var(--blue); }
-.result-section.purple { border-top: 4px solid var(--purple); }
-
-.result-section.full-width {
-  grid-column: 1 / -1;
-}
-
-/* BADGES */
-
-.section-badge {
+.badge {
   font-size: 11px;
   font-weight: 600;
   padding: 6px 10px;
-  border-radius: 14px;
+  border-radius: 20px;
   display: inline-block;
-  margin-bottom: 14px;
-  letter-spacing: 0.5px;
-}
-
-.success  { background: rgba(52,199,89,0.15); color: var(--green); }
-.caution  { background: rgba(255,149,0,0.15); color: var(--yellow); }
-.danger   { background: rgba(255,59,48,0.15); color: var(--red); }
-.growth   { background: rgba(0,122,255,0.15); color: var(--blue); }
-.rule     { background: rgba(175,82,222,0.15); color: var(--purple); }
-
-.section-title {
-  font-size: 20px;
   margin-bottom: 12px;
 }
 
-/* LIST */
-
-.section-list {
-  list-style: none;
-  padding: 0;
-}
-
-.section-list li {
-  margin-bottom: 10px;
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-/* RULE */
+.success { background: rgba(52,199,89,0.15); color: #34c759; }
+.caution { background: rgba(255,149,0,0.15); color: #ff9500; }
+.danger  { background: rgba(255,59,48,0.15); color: #ff3b30; }
+.growth  { background: rgba(0,122,255,0.15); color: #007aff; }
+.rule    { background: rgba(175,82,222,0.15); color: #af52de; }
 
 .operating-rule {
   background: rgba(175,82,222,0.1);
-  padding: 18px;
+  padding: 16px;
   border-radius: 12px;
-  font-size: 18px;
   font-weight: 600;
-  margin-top: 10px;
 }
 
-/* FEEDBACK */
+.result-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.result-actions .btn-primary {
+  border-radius: 28px;
+  padding: 14px 24px;
+}
 
 .feedback-block {
   margin-top: 20px;
   text-align: center;
 }
 
-.feedback-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-}
-
-.feedback-buttons button {
-  width: 42px;
-  height: 42px;
+.feedback-block button {
+  margin: 0 8px;
+  border: 1px solid #ddd;
   border-radius: 50%;
-  border: 1px solid var(--border);
-  background: white;
-  cursor: pointer;
+  width: 40px;
+  height: 40px;
 }
-
-.feedback-buttons button:hover {
-  border-color: var(--accent);
-}
-
-/* ACTIONS */
-
-.result-actions {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin-bottom: 50px;
-}
-
-/* DISCLAIMER */
 
 .disclaimer {
   background: #ececf1;
-  padding: 18px;
-  border-radius: 12px;
+  padding: 16px;
+  border-radius: 10px;
   text-align: center;
   font-size: 14px;
-  color: var(--muted);
+  color: #666;
 }
