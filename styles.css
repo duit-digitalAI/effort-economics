@@ -38,19 +38,33 @@ body {
 .nav-inner {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: flex-start;
+  gap: 14px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
+.nav-inner a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
 .logo {
-  width: 32px;
-  height: auto;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  display: block;
 }
 
 .brand {
-  font-size: 17px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+  display: flex;
+  align-items: center;
 }
 
 /* HERO */
