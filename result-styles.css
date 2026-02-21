@@ -1,31 +1,8 @@
-/* =========================================================
-   NAV FIX
-========================================================= */
-
 .result-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-
-.nav-link {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  color: inherit;
-}
-
-.back-link {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--accent);
-  text-decoration: none;
-}
-
-/* =========================================================
-   PAGE LAYOUT
-========================================================= */
 
 .result-container {
   background: #f6f7fb;
@@ -45,17 +22,21 @@
 .result-title {
   font-size: 48px;
   font-weight: 700;
-  margin-bottom: 10px;
 }
 
 .result-subtitle {
   font-size: 18px;
   color: var(--muted);
+  margin-top: 8px;
 }
 
-/* =========================================================
-   GRID
-========================================================= */
+.usage-counter {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* GRID */
 
 .results-grid {
   display: grid;
@@ -70,63 +51,56 @@
   }
 }
 
-/* =========================================================
-   CARD
-========================================================= */
+/* CARD */
 
 .result-section {
   background: white;
   border-radius: 16px;
-  padding: 30px;
+  padding: 28px;
   border: 1px solid var(--border);
-  transition: all 0.2s ease;
+  position: relative;
+  transition: 0.2s ease;
 }
 
 .result-section:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
 }
 
-.result-section.green {
-  border-top: 4px solid var(--green);
-  background: rgba(52,199,89,0.05);
-}
-
-.result-section.yellow {
-  border-top: 4px solid var(--yellow);
-  background: rgba(255,149,0,0.05);
-}
-
-.result-section.red {
-  border-top: 4px solid var(--red);
-  background: rgba(255,59,48,0.05);
-}
-
-.result-section.blue {
-  border-top: 4px solid var(--blue);
-  background: rgba(0,122,255,0.05);
-}
-
-.result-section.purple {
-  border-top: 4px solid var(--purple);
-  background: rgba(175,82,222,0.05);
-}
+.result-section.green  { border-top: 4px solid var(--green); }
+.result-section.yellow { border-top: 4px solid var(--yellow); }
+.result-section.red    { border-top: 4px solid var(--red); }
+.result-section.blue   { border-top: 4px solid var(--blue); }
+.result-section.purple { border-top: 4px solid var(--purple); }
 
 .result-section.full-width {
   grid-column: 1 / -1;
 }
 
-.section-title {
-  font-size: 20px;
+/* BADGES */
+
+.section-badge {
+  font-size: 11px;
   font-weight: 600;
-  margin-bottom: 8px;
+  padding: 6px 10px;
+  border-radius: 14px;
+  display: inline-block;
+  margin-bottom: 14px;
+  letter-spacing: 0.5px;
 }
 
-.section-description {
-  font-size: 14px;
-  color: var(--muted);
-  margin-bottom: 16px;
+.success  { background: rgba(52,199,89,0.15); color: var(--green); }
+.caution  { background: rgba(255,149,0,0.15); color: var(--yellow); }
+.danger   { background: rgba(255,59,48,0.15); color: var(--red); }
+.growth   { background: rgba(0,122,255,0.15); color: var(--blue); }
+.rule     { background: rgba(175,82,222,0.15); color: var(--purple); }
+
+.section-title {
+  font-size: 20px;
+  margin-bottom: 12px;
 }
+
+/* LIST */
 
 .section-list {
   list-style: none;
@@ -134,50 +108,33 @@
 }
 
 .section-list li {
-  padding-left: 20px;
   margin-bottom: 10px;
-  position: relative;
   font-size: 15px;
   line-height: 1.6;
 }
 
-.section-list li::before {
-  content: "•";
-  position: absolute;
-  left: 0;
-}
-
-/* =========================================================
-   OPERATING RULE
-========================================================= */
+/* RULE */
 
 .operating-rule {
   background: rgba(175,82,222,0.1);
-  padding: 16px;
-  border-radius: 10px;
-  font-weight: 500;
+  padding: 18px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
   margin-top: 10px;
 }
 
-/* =========================================================
-   FEEDBACK
-========================================================= */
+/* FEEDBACK */
 
 .feedback-block {
-  margin-top: 18px;
+  margin-top: 20px;
   text-align: center;
-}
-
-.feedback-label {
-  font-size: 14px;
-  color: var(--muted);
-  margin-bottom: 8px;
 }
 
 .feedback-buttons {
   display: flex;
   justify-content: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .feedback-buttons button {
@@ -186,7 +143,6 @@
   border-radius: 50%;
   border: 1px solid var(--border);
   background: white;
-  font-size: 18px;
   cursor: pointer;
 }
 
@@ -194,9 +150,7 @@
   border-color: var(--accent);
 }
 
-/* =========================================================
-   ACTIONS
-========================================================= */
+/* ACTIONS */
 
 .result-actions {
   display: flex;
@@ -206,20 +160,7 @@
   margin-bottom: 50px;
 }
 
-.btn-secondary {
-  background: white;
-  border: 1px solid var(--border);
-  padding: 14px 22px;
-  border-radius: 24px;
-}
-
-.btn-secondary:hover {
-  border-color: var(--accent);
-}
-
-/* =========================================================
-   DISCLAIMER
-========================================================= */
+/* DISCLAIMER */
 
 .disclaimer {
   background: #ececf1;
