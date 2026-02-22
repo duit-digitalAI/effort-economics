@@ -402,13 +402,16 @@ async function handleFinalSubmit(e) {
   submitBtn.disabled = true;
 
   const payload = {
-    phone_number: formState.phoneNumber,
-    consent: formState.consent,
-    birth_date: formState.birthDate,
-    birth_time: formState.birthTime,
-    latitude: formState.latitude,
-    longitude: formState.longitude,
-    tz_offset: formState.tz_offset
+  phone_number: formState.phoneNumber,
+  consent: formState.consent,
+  birth_date: formState.birthDate,
+  birth_time: formState.birthTime,
+  latitude: formState.latitude,
+  longitude: formState.longitude,
+  tz_offset: formState.tz_offset,
+  pin_code: formState.pinCode,
+  city: formState.city,
+  country: formState.countryCode   // IMPORTANT: match variable name
   };
 
   console.log('→ Calling API:', API_URL);
